@@ -22,8 +22,8 @@ export type UserProps = {
   status: string;
   company: string;
   avatarUrl: string;
-  status2?: string;
- status22?: string;
+  chargevar?: string;
+ chargefixe?: string;
   status3?: string;
   status4?: string;
   status44?: string;
@@ -118,8 +118,8 @@ export function UserTableRow({ row }: UserTableRowProps) {
         </TableCell>
 
         {/* Vous pouvez continuer avec les autres cellules de manière similaire */}
-        <TableCell>{row.status2 }</TableCell>
-         <TableCell>{row.status22 }</TableCell>
+        <TableCell>{row.chargevar }</TableCell>
+         <TableCell>{row.chargefixe }</TableCell>
         <TableCell>{row.status3 }</TableCell>
         <TableCell>{row.status4}</TableCell>
         <TableCell>{row.status44 }</TableCell>

@@ -29,20 +29,17 @@ icon: <img src="/assets/icons/navbar/statisctics.png" alt="dashboard" width={24}
     icon: <img src="/assets/icons/navbar/checklist.png" alt="checklist" width={24} height={24} />,
   },
   
-  // {
-  //   title: 'Product',
-  //   path: '/products',
-  //   icon: icon('ic-cart'),
-  //   info: (
-  //     <Label color="error" variant="inverted">
-  //       +3
-  //     </Label>
-  //   ),
-  // },
   {
-    title: 'Mon Compte',
-    path: '/blog',
-    icon: icon('ic-blog'),
-  },
+    title: 'Documentation',
+    path: '/products',
+    icon: icon('ic-cart'),
+   
+    
+  }
+  // {
+  //   title: 'Documentation',
+  //   path: '/docs',
+  //   icon: icon('ic-blog'),
+  // },
  
 ];

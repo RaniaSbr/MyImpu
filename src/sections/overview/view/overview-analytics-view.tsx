@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _posts, _tasks, _traffic, _timeline } from 'src/_mock';
+import { _posts, _tasks, _traffic, _timeline ,_timeline2,_timeline3} from 'src/_mock';
 
 import { AnalyticsNews } from '../analytics-news';
 import { AnalyticsTasks } from '../analytics-tasks';
@@ -20,8 +20,33 @@ import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 export function OverviewAnalyticsView() {
   return (
     <DashboardContent maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-          Tableau De Bord      </Typography>
+     <Typography
+  variant="h3"
+  sx={{
+    mb: { xs: 3, md: 5 },
+    fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1,
+  }}
+>
+   Tableau De Bord 📊
+</Typography>
+
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+  <div style={{ flex: '1 1 30%' }}>
+    <AnalyticsOrderTimeline title="Informations fixes du mois d'Avril" list={_timeline} />
+  </div>
+
+  <div style={{ flex: '1 1 30%' }}>
+    <AnalyticsOrderTimeline title="Imputation du mois d'Avril" list={_timeline2} />
+  </div>
+
+  <div style={{ flex: '1 1 30%' }}>
+    <AnalyticsOrderTimeline title="Coûts du mois d'Avril" list={_timeline3} />
+  </div>
+</div>
+
 
       <Grid container spacing={3}>
         {/* <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -92,6 +117,7 @@ export function OverviewAnalyticsView() {
          <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsWebsiteVisits
             title="Coefficient d'imputation rationnelle "
+            subheader="(43%) plus que le mois précedent"
             chart={{
               categories: ['Oct', 'Nov','Dec','Jan','Fev','Mar','Apr','May'],
               series: [
@@ -106,6 +132,8 @@ export function OverviewAnalyticsView() {
 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>   <Grid size={{ xs: 10, md: 10, lg: 10 }} >
           <AnalyticsConversionRates
             title="Différences d'imputation des charges fixes"
+            subheader="(43%) plus que le mois précedent"
+            
             chart={{
               categories: ['Oct', 'Nov','Dec','Jan','Fev','Mar','Apr','May'],
               series: [
@@ -172,10 +200,9 @@ export function OverviewAnalyticsView() {
                         </div>
 
             
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsOrderTimeline title="Order timeline" list={_timeline} />
-        </Grid>
+       
       </Grid>
+      
     </DashboardContent>
   );
 }

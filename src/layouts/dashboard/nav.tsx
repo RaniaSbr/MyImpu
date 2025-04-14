@@ -54,8 +54,6 @@ export function NavDesktop({
         flexDirection: 'column',
         zIndex: 'var(--layout-nav-zIndex)',
         width: 'var(--layout-nav-vertical-width)',
-            backgroundColor: '#535150',  // <-- fond gris foncé
-
         borderRight: `1px solid ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
         [theme.breakpoints.up(layoutQuery)]: {
           display: 'flex',
@@ -128,7 +126,7 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
     alt=""
     style={{ height: '60%', width: '25%' }}
   />
-  <h1 style={{color:'white'  }}>MyImpu</h1>
+  <h1 style={{color:'#615F5F'  }}>MyImpu</h1>
 </div>
 
 
@@ -144,8 +142,6 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
               display: 'flex',
               flex: '1 1 auto',
               flexDirection: 'column',
-              boxShadow: '4px 0 10px rgba(0, 0, 0, 0.1)',  // ombre douce à droite
-
             },
             ...(Array.isArray(sx) ? sx : [sx]),
           ]}
@@ -169,25 +165,23 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
                     href={item.path}
                     sx={[
                       (theme) => ({
-                        pl: 3,
-                        py: 2.5,
+                        pl: 2,
+                        py: 1,
                         gap: 2,
                         pr: 1.5,
-                        mx: 0.5,
                         borderRadius: 0.75,
-                        fontSize: '1.2rem',
+                        typography: 'body2',
+                        fontSize: '1.3rem',
+                        margin: 2,
                         fontWeight: 'fontWeightMedium',
-                        color: '#FFFFFF',
-                        
+                        color: theme.vars.palette.text.secondary,
                         minHeight: 44,
                         ...(isActived && {
                           fontWeight: 'fontWeightSemiBold',
-                          color: '#FFFFFF',
-                          bgcolor: isActived ? 'rgba(224, 224, 224, 0.6)' : 'transparent',
+                          color: theme.vars.palette.primary.main,
+                          bgcolor: isActived ? 'rgba(13, 71, 161, 0.16)' : 'transparent',
     '&:hover': {
-      bgcolor: isActived ? 'rgba(224, 224, 224, 0.6)' : '#e0e0e0',
-
-      
+      bgcolor: isActived ?  'rgba(13, 71, 161, 0.16)' : '#ffcdd2',
                           },
                         }),
                       }),
@@ -215,4 +209,4 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
       <NavUpgrade />
     </>
   );
-}
+}  

@@ -120,8 +120,8 @@ export const _users = [...Array(9)].map((_, index) => ({
   status: statuses[index] || '0',  // Utilisation des valeurs numériques
   role: ['4000'][index] || '4000',
   // Ajout des statuts supplémentaires dans l'objet utilisateur
-status2: cv[index] || '0',
-status22: cf[index] || '0',
+chargevar: cv[index] || '0',
+chargefixe: cf[index] || '0',
   status3: cpt[index] || '0',
   status4: cpu[index] || '0',
   status44: cpv[index] || '0',
@@ -197,14 +197,57 @@ export const _langs = [
 
 // ----------------------------------------------------------------------
 
-export const _timeline = [...Array(5)].map((_, index) => ({
+export const _timeline = [...Array(4)].map((_, index) => ({
   id: _id(index),
   title: [
-    '1983, orders, $4220',
-    '12 Invoices have been paid',
-    'Order #37745 from September',
-    'New order placed #XF-2356',
-    'New order placed #XF-2346',
+    "Quantités réelles produites (nombre d'unités) :",
+    'Activité normale :',
+    'Charges variables ou proportionnelles réelles :',
+    'Charges fixes ou de structure réelles :',
+  ][index],
+    title2: [
+    '1990',
+    '4000',
+    '10 500,00 DA',
+    '4 500 DA',
+  ][index],
+  type: `order${index + 1}`,
+  time: _times(index),
+}));
+
+// ----------------------------------------------------------------------
+export const _timeline2 = [...Array(4)].map((_, index) => ({
+  id: _id(index),
+  title: [
+        "Coefficient d'imputation rationnelle :",
+    'Charges fixes ou de structure imputées :',
+    "Différences d'imputation des charges fixes :",
+    'Mali / Boni :',
+  ][index],
+    title2: [
+    '0,50',
+    '2 238,75',
+    '+2 261,25',
+    'Mali',
+  ][index],
+  type: `order${index + 1}`,
+  time: _times(index),
+}));
+
+// ----------------------------------------------------------------------
+export const _timeline3 = [...Array(4)].map((_, index) => ({
+  id: _id(index),
+  title: [
+        'Coût de production total :',
+    'Coût de production unitaire :',
+    'Coût variable unitaire :',
+    'Coût fixe unitaire :',
+  ][index],
+    title2: [
+    '12 738,75',
+    '6,40',
+    '5,28',
+    '1,13',
   ][index],
   type: `order${index + 1}`,
   time: _times(index),

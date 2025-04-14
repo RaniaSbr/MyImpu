@@ -51,14 +51,7 @@ export function UserView() {
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
           Tableau de suivi de production
         </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={handleClick}
-        >
-          Ajouter une nouvelle donnée
-        </Button>
+      
       </Box>
 
       <Card>

@@ -2,10 +2,12 @@ import { useState } from "react";
 
 export default function NewUser() {
   const [mois, setMois] = useState("");
+  const [annee, setAnnee] = useState("");
   const [quantite, setQuantite] = useState("");
   const [activiteNormale, setActiviteNormale] = useState("");
   const [chargesVariables, setChargesVariables] = useState("");
   const [chargesFixes, setChargesFixes] = useState("");
+  const [afficherResultats, setAfficherResultats] = useState(false);
 
   const qte = parseFloat(quantite);
   const actN = parseFloat(activiteNormale);
@@ -17,16 +19,25 @@ export default function NewUser() {
   const diffImputation = chFixes - chFixesImputees;
   const maliBoni = diffImputation > 0 ? "Mali" : diffImputation < 0 ? "Boni" : "Équilibre";
 
-  const coutProdTotal = chVar + chFixesImputees;
-  const coutProdUnitaire = qte ? coutProdTotal / qte : 0;
+  const status3 = chVar + chFixesImputees;
+  const coutProdUnitaire = qte ? status3 / qte : 0;
   const coutVarUnitaire = qte ? chVar / qte : 0;
   const coutFixeUnitaire = qte ? chFixesImputees / qte : 0;
+
+  const handleAfficherResultats = () => {
+    if (mois && annee && quantite && activiteNormale && chargesVariables && chargesFixes) {
+      setAfficherResultats(true);
+    } else {
+      alert("Veuillez remplir tous les champs.");
+    }
+  };
 
   return (
     <div
       style={{
         maxWidth: "896px",
-        margin: "0 auto",
+        margin: "auto",
+        marginBottom: "4rem",
         backgroundColor: "white",
         borderRadius: "1.5rem",
         boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)",
@@ -89,6 +100,23 @@ export default function NewUser() {
               <option value="Décembre">Décembre</option>
             </select>
           </div>
+          <div>
+            <label style={{ color: "#374151", fontWeight: "500" }}>Année :</label>
+            <input
+              type="number"
+              placeholder="Ex: 2025"
+              value={annee}
+              onChange={(e) => setAnnee(e.target.value)}
+              style={{
+                marginTop: "0.25rem",
+                width: "100%",
+                padding: "0.75rem",
+                borderRadius: "0.5rem",
+                border: "1px solid #D1D5DB",
+                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+              }}
+            />
+          </div>
         </div>
       </section>
 
@@ -119,7 +147,7 @@ export default function NewUser() {
               style={{
                 marginTop: "0.25rem",
                 width: "100%",
-                padding: "2rem",
+                padding: "0.75rem",
                 border: "1px solid #D1D5DB",
                 borderRadius: "1rem",
                 boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
@@ -204,37 +232,58 @@ export default function NewUser() {
         </div>
       </section>
 
-      {/* Résultats */}
-      <section
-        style={{
-          backgroundColor: "#EFF6FF",
-          border: "1px solid #BFDBFE",
-          borderRadius: "1rem",
-          padding: "1.5rem",
-          marginTop: "2rem",
-        }}
-      >
-        <h3
+      {/* Bouton pour afficher les résultats */}
+      <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+        <button
+          onClick={handleAfficherResultats}
           style={{
-            fontSize: "1.5rem",
-            fontWeight: "700",
-            color: "#1D4ED8",
-            marginBottom: "1rem",
+            padding: "0.75rem 1.5rem",
+            backgroundColor: "#1D4ED8",
+            color: "white",
+            fontWeight: "600",
+            borderRadius: "1rem",
+            border: "none",
+            cursor: "pointer",
+            transition: "background-color 0.3s",
           }}
         >
-          📊 Résultats
-        </h3>
-        <div style={{ display: "grid", gap: "1rem", color: "#374151" }}>
-          <p><strong>1. Coefficient d’imputation :</strong> {coeff.toFixed(2)}</p>
-          <p><strong>2. Charges fixes imputées :</strong> {chFixesImputees.toFixed(2)} DA</p>
-          <p><strong>3. Différence d’imputation :</strong> {diffImputation.toFixed(2)} DA</p>
-          <p><strong>4. Mali / Boni :</strong> {maliBoni}</p>
-          <p><strong>5. Coût total de production :</strong> {coutProdTotal.toFixed(2)} DA</p>
-          <p><strong>6. Coût unitaire de production :</strong> {coutProdUnitaire.toFixed(2)} DA</p>
-          <p><strong>7. Coût variable unitaire :</strong> {coutVarUnitaire.toFixed(2)} DA</p>
-          <p><strong>8. Coût fixe unitaire :</strong> {coutFixeUnitaire.toFixed(2)} DA</p>
-        </div>
-      </section>
+          Afficher les résultats
+        </button>
+      </div>
+
+      {/* Résultats */}
+      {afficherResultats && (
+        <section
+          style={{
+            backgroundColor: "#EFF6FF",
+            border: "1px solid #BFDBFE",
+            borderRadius: "1rem",
+            padding: "1.5rem",
+            marginTop: "2rem",
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: "700",
+              color: "#1D4ED8",
+              marginBottom: "1rem",
+            }}
+          >
+            📊 Résultats pour {mois} {annee}
+          </h3>
+          <div style={{ display: "grid", gap: "1rem", color: "#374151" }}>
+            <p><strong>1. Coefficient d’imputation :</strong> {coeff.toFixed(2)}</p>
+            <p><strong>2. Charges fixes imputées :</strong> {chFixesImputees.toFixed(2)} DA</p>
+            <p><strong>3. Différence d’imputation :</strong> {diffImputation.toFixed(2)} DA</p>
+            <p><strong>4. Mali / Boni :</strong> {maliBoni}</p>
+            <p><strong>5. Coût total de production :</strong> {status3.toFixed(2)} DA</p>
+            <p><strong>6. Coût unitaire de production :</strong> {coutProdUnitaire.toFixed(2)} DA</p>
+            <p><strong>7. Coût variable unitaire :</strong> {coutVarUnitaire.toFixed(2)} DA</p>
+            <p><strong>8. Coût fixe unitaire :</strong> {coutFixeUnitaire.toFixed(2)} DA</p>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

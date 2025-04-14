@@ -28,7 +28,7 @@ type Props = CardProps & {
 };
 
 
-export function AnalyticsOrderTimeline({ title, subheader, list, sx, ...other }: Props) {
+export function AnalyticsOrderTimeline2({ title, subheader, list, sx, ...other }: Props) {
   return (
     <Card sx={sx} {...other}>
       <CardHeader title={title} subheader={subheader} />
