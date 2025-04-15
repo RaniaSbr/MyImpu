@@ -55,3 +55,45 @@ input[type='number']::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
+.table-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.badge.red {
+  background-color: #f44336;
+  color: white;
+}
+
+.badge.green {
+  background-color: #4caf50;
+  color: white;
+}
+
+.badge.yellow {
+  background-color: #ffeb3b;
+  color: black;
+}

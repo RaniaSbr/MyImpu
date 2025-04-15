@@ -17,6 +17,8 @@ export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
+export const DocPage = lazy(() => import('src/pages/doc'));
+
 export const NewUserPage = lazy(() => import('src/sections/user/new-user'));
 
 const renderFallback = () => (
@@ -54,6 +56,8 @@ export const routesSection: RouteObject[] = [
       { path: 'products', element: <ProductsPage /> },
       { path: 'blog', element: <BlogPage /> },
       { path: 'new-user', element: <NewUserPage /> }, // Ajout de la route pour New User sous /user
+      { path: 'doc', element: <DocPage /> }, // Ajout de la route pour New User sous /user
+
     ],
   },
   {

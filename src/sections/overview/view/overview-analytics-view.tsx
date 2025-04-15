@@ -1,208 +1,258 @@
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import { DashboardContent } from 'src/layouts/dashboard';
-import { _posts, _tasks, _traffic, _timeline ,_timeline2,_timeline3} from 'src/_mock';
+import useChartData from 'src/routes/hooks/useChartData';
 
-import { AnalyticsNews } from '../analytics-news';
-import { AnalyticsTasks } from '../analytics-tasks';
+import { DashboardContent } from 'src/layouts/dashboard';
+// Tri des imports selon ESLint perfectionist
+import { _timeline, _timeline2, _timeline3 } from 'src/_mock';
+
+// Tri alphabétique des imports de composants
 import { AnalyticsAreaIncome } from '../analytics-conversion-area';
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
-import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
-import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
-// ----------------------------------------------------------------------
+// Interface pour définir la structure des données
+interface ChartItem {
+  label: string;
+  value: number;
+}
 
 export function OverviewAnalyticsView() {
+  const { charges, coefficients, differences, production } = useChartData();
+
+  // Fonction utilitaire pour convertir un mois français en numéro de mois (0-11)
+  const getMonthNumber = (frenchMonth: string): number => {
+    const months: Record<string, number> = {
+      'janvier': 0, 'février': 1, 'mars': 2, 'avril': 3, 'mai': 4, 'juin': 5,
+      'juillet': 6, 'août': 7, 'septembre': 8, 'octobre': 9, 'novembre': 10, 'décembre': 11
+    };
+    return months[frenchMonth.toLowerCase()] || 0;
+  };
+
+  // Fonction utilitaire pour convertir un numéro de mois en nom français capitalisé
+  const getMonthName = (monthNumber: number): string => {
+    const months = [
+      'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+    ];
+    const monthName = months[monthNumber] || months[0];
+    return monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  };
+
+  // Fonction pour déterminer dynamiquement le dernier mois disponible
+  const getLastAvailableMonth = (): string => {
+    // Combinons toutes les données disponibles pour trouver le mois le plus récent
+    const allDateLabels: string[] = [];
+    
+    // Collecter toutes les étiquettes de date de toutes les sources de données
+    if (coefficients && coefficients.length > 0) {
+      allDateLabels.push(...coefficients.map(item => item.label));
+    }
+    
+    if (differences && differences.length > 0) {
+      allDateLabels.push(...differences.map(item => item.label));
+    }
+    
+    if (production && production.labels && production.labels.length > 0) {
+      allDateLabels.push(...production.labels);
+    }
+    
+    // Si aucune donnée n'est disponible, utiliser le mois précédent comme fallback
+    if (allDateLabels.length === 0) {
+      const now = new Date();
+      now.setMonth(now.getMonth() - 1);
+      return `${getMonthName(now.getMonth())} ${now.getFullYear()}`;
+    }
+    
+    // Convertir les étiquettes en objets Date pour pouvoir les comparer
+    const dateObjects: { original: string; date: Date }[] = allDateLabels.map(label => {
+      let date = new Date();
+      
+      // Gestion de différents formats possibles
+      // Format: "Mois AAAA" (ex: "Juin 2025")
+      if (label.includes(' ') && !label.includes('/')) {
+        const parts = label.split(' ');
+        if (parts.length === 2) {
+          const monthName = parts[0].toLowerCase();
+          const year = parseInt(parts[1], 10);
+          if (!isNaN(year)) {
+            date = new Date(year, getMonthNumber(monthName));
+          }
+        }
+      }
+      // Format: "MM/AAAA" (ex: "06/2025")
+      else if (label.includes('/')) {
+        const parts = label.split('/');
+        if (parts.length === 2) {
+          const month = parseInt(parts[0], 10) - 1; // Ajustement car les mois en JS vont de 0-11
+          const year = parseInt(parts[1], 10);
+          if (!isNaN(month) && !isNaN(year)) {
+            date = new Date(year, month);
+          }
+        }
+      }
+      
+      return { original: label, date };
+    });
+    
+    // Trier les dates par ordre décroissant
+    dateObjects.sort((a, b) => b.date.getTime() - a.date.getTime());
+    
+    // Si nous avons au moins une date valide, utiliser la plus récente
+    if (dateObjects.length > 0) {
+      const mostRecentDate = dateObjects[0].date;
+      return `${getMonthName(mostRecentDate.getMonth())} ${mostRecentDate.getFullYear()}`;
+    }
+    
+    // Si tout échoue, revenir au mois actuel - 1
+    const fallback = new Date();
+    fallback.setMonth(fallback.getMonth() - 1);
+    return `${getMonthName(fallback.getMonth())} ${fallback.getFullYear()}`;
+  };
+
+  const lastMonthWithYear = getLastAvailableMonth();
+
+  if (!charges || !coefficients || !differences || !production) {
+    return (
+      <DashboardContent maxWidth="xl">
+        <Typography variant="h5" sx={{ textAlign: 'center', py: 10 }}>
+          Chargement des données...
+        </Typography>
+      </DashboardContent>
+    );
+  }
+
   return (
     <DashboardContent maxWidth="xl">
-     <Typography
-  variant="h3"
-  sx={{
-    mb: { xs: 3, md: 5 },
-    fontWeight: 'bold',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-  }}
->
-   Tableau De Bord 📊
-</Typography>
+      <Typography
+        variant="h3"
+        sx={{
+          mb: 4,
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+        }}
+      >
+        Tableau De Bord 📊
+      </Typography>
 
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-  <div style={{ flex: '1 1 30%' }}>
-    <AnalyticsOrderTimeline title="Informations fixes du mois d'Avril" list={_timeline} />
-  </div>
-
-  <div style={{ flex: '1 1 30%' }}>
-    <AnalyticsOrderTimeline title="Imputation du mois d'Avril" list={_timeline2} />
-  </div>
-
-  <div style={{ flex: '1 1 30%' }}>
-    <AnalyticsOrderTimeline title="Coûts du mois d'Avril" list={_timeline3} />
-  </div>
-</div>
-
-
-      <Grid container spacing={3}>
-        {/* <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Weekly sales"
-            percent={2.6}
-            total={714000}
-            icon={<img alt="Weekly sales" src="/assets/icons/glass/ic-glass-bag.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [22, 8, 35, 50, 82, 84, 77, 12],
-            }}
+      {/* Section des timelines */}
+      <div style={{ 
+        display: 'flex', 
+        gap: '16px', 
+        flexWrap: 'wrap',
+        marginBottom: '32px'
+      }}>
+        <div style={{ flex: '1 1 30%' }}>
+          <AnalyticsOrderTimeline 
+            title={`Données du mois de ${lastMonthWithYear}`} 
+            list={_timeline} 
+            sx={{ height: '100%', boxShadow: 2, borderRadius: 2 }}
           />
-        </Grid> */}
+        </div>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          {/* <AnalyticsWidgetSummary
-            title="New users"
-            percent={-0.1}
-            total={1352831}
-            color="secondary"
-            icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 47, 40, 62, 73, 30, 23, 54],
-            }}
-          /> */}
-        </Grid>
+        <div style={{ flex: '1 1 30%' }}>
+          <AnalyticsOrderTimeline 
+            title={`Charges imputées du mois de ${lastMonthWithYear}`} 
+            list={_timeline2} 
+            sx={{ height: '100%', boxShadow: 2, borderRadius: 2 }}
+          />
+        </div>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          {/* <AnalyticsWidgetSummary
-            title="Purchase orders"
-            percent={2.8}
-            total={1723315}
-            color="warning"
-            icon={<img alt="Purchase orders" src="/assets/icons/glass/ic-glass-buy.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [40, 70, 50, 28, 70, 75, 7, 64],
-            }}
-          /> */}
-        </Grid>
+        <div style={{ flex: '1 1 30%' }}>
+          <AnalyticsOrderTimeline 
+            title={`Coûts de production du mois de ${lastMonthWithYear}`} 
+            list={_timeline3} 
+            sx={{ height: '100%', boxShadow: 2, borderRadius: 2 }}
+          />
+        </div>
+      </div>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          {/* <AnalyticsWidgetSummary
-            title="Messages"
-            percent={3.6}
-            total={234}
-            color="error"
-            icon={<img alt="Messages" src="/assets/icons/glass/ic-glass-message.svg" />}
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 30, 23, 54, 47, 40, 62, 73],
-            }}
-          /> */}
-        </Grid>
-<div style={{ display: 'flex', alignItems: 'center', width: '100%',gap:'20px' }}>  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+      <Grid container spacing={4} sx={{ px: { xs: 0, md: 2 } }}>
+        <Grid sx={{ gridColumn: { xs: 'span 12', md: 'span 5' } }}>
           <AnalyticsCurrentVisits
             title="Charges de ce mois"
             chart={{
-              series: [
-                { label: 'Charges fixes', value: 4500 },
-                { label: 'Charges Variables', value: 9900 }
-              ],
+              series: charges.series,
+            }}
+            sx={{ 
+              height: 420,
+              boxShadow: 2,
+              borderRadius: 2,
+              '& .apexcharts-canvas': { 
+                margin: '0 auto',
+                maxWidth: '100%'
+              } 
             }}
           />
         </Grid>
-         <Grid size={{ xs: 12, md: 6, lg: 8 }}>
+
+        <Grid sx={{ gridColumn: { xs: 'span 12', md: 'span 12', lg:'12' } }}>
+        {/* Coefficient d'imputation (ligne) */}
           <AnalyticsWebsiteVisits
-            title="Coefficient d'imputation rationnelle "
-            subheader="(43%) plus que le mois précedent"
+            title="Coefficient d'imputation rationnelle"
+            subheader="Données des 8 derniers mois"
             chart={{
-              categories: ['Oct', 'Nov','Dec','Jan','Fev','Mar','Apr','May'],
+              categories: coefficients.map((item) => item.label),
               series: [
-           { name: 'CIR', data: [1.25, 0.50, 1, 0.63, 1.50, 1.25, 0.87, 1.01 ]
- },],
+                {
+                  name: 'CIR',
+                  data: coefficients.map((item) => item.value),
+                },
+              ],
+            }}
+            sx={{ 
+              height: 420,
+              boxShadow: 2,
+              borderRadius: 2
             }}
           />
-        </Grid></div>
-        
+        </Grid>
 
-       
-<div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>   <Grid size={{ xs: 10, md: 10, lg: 10 }} >
+        {/* Deuxième rangée: graphiques pleine largeur */}
+        <Grid sx={{ gridColumn: 'span 12' }}>
+          {/* Différence d'imputation (barres) */}
           <AnalyticsConversionRates
             title="Différences d'imputation des charges fixes"
-            subheader="(43%) plus que le mois précedent"
-            
+            subheader="Données des 8 derniers mois"
             chart={{
-              categories: ['Oct', 'Nov','Dec','Jan','Fev','Mar','Apr','May'],
+              categories: differences.map((item) => item.label),
               series: [
-                { name: 'DICF', data: [   -1125.00, 2261.25, 0.00, 1687.50, -2250.00, -1125.00, 587.25, -28.13, 2261.25]
- }
+                {
+                  name: 'DICF',
+                  data: differences.map((item) => item.value),
+                },
               ],
+            }}
+            sx={{ 
+              height: 450,
+              boxShadow: 2,
+              borderRadius: 2
             }}
           />
-        </Grid></div>
-      
-        
-         
-
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          {/* <AnalyticsCurrentSubject
-            title="Coûts Unitaires"
-            chart={{
-              categories: ['Octobre','Decembre', 'Janvier', 'Fevrier', 'Mars', 'Avril'],
-              series: [
-               { name: 'Production', data: [3.3,3.3, 3.3, 3.3, 3.3, 3.3, 3.3] },
-               { name: 'Variable', data: [2.5,2.5, 2.5, 2.5, 2.5, 2.5, 2.5] },
-               { name: 'Fixe', data: [0.8,0.8, 0.8, 0.8, 0.8, 0.8, 0.8] },
-                                                
-
-
-              ],
-            }}
-          /> */}
         </Grid>
 
-        {/* <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsNews title="News" list={_posts.slice(0, 5)} />
-        </Grid> */}
-  
-
-        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsTrafficBySite title="Traffic by site" list={_traffic} />
-        </Grid> */}
-{/* 
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsTasks title="Tasks" list={_tasks} />
-        </Grid> */}
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>  
-         <Grid   size={{ xs: 20, md: 6, lg: 10 }} >
-              <AnalyticsAreaIncome
-               title="Production réelle vs Production normale"
-               subheader=""
-              chart={{
-              categories: ['Oct', 'Nov','Dec','Jan','Fev','Mar','Apr','May'],
-              series: [
-             {
-                name: 'Prod Normale',
-                data: [4000, 4000, 4000, 4000, 4000, 4000, 4000,4000],
-              },
-              {
-                name: 'Prod Réelle',
-                data:   [5000, 1990, 4000, 2500, 6000, 5000, 3478, 4025]
-
-      },
-    ],
-  }}
-/>
-            </Grid>
-                        </div>
-
-            
-       
+        <Grid sx={{ gridColumn: 'span 12' }}>
+          {/* Production réelle vs normale (aire) */}
+          <AnalyticsAreaIncome
+            title="Production réelle vs Production normale"
+            subheader="Comparaison des 8 derniers mois"
+            chart={{
+              categories: production.labels,
+              series: production.series,
+            }}
+            sx={{ 
+              height: 450,
+              boxShadow: 2,
+              borderRadius: 2
+            }}
+          />
+        </Grid>
       </Grid>
-      
     </DashboardContent>
   );
 }

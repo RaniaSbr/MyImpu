@@ -25,7 +25,7 @@ icon: <img src="/assets/icons/navbar/statisctics.png" alt="dashboard" width={24}
   },
    {
     title: 'Mes informations',
-    path: '/user',
+    path: '/doc',
     icon: <img src="/assets/icons/navbar/checklist.png" alt="checklist" width={24} height={24} />,
   },
   
@@ -36,10 +36,5 @@ icon: <img src="/assets/icons/navbar/statisctics.png" alt="dashboard" width={24}
    
     
   }
-  // {
-  //   title: 'Documentation',
-  //   path: '/docs',
-  //   icon: icon('ic-blog'),
-  // },
  
 ];

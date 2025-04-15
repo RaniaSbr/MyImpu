@@ -14,8 +14,8 @@ import {
 
 
 // Statuts supplémentaires
-const statuses = ["1.25", "0.50", "1.00", "0.63", "1.50", "1.25", "0.87", "1.01", "0.50"];
-const cv = [
+const statuses = ["1.25", "0.50", "1.00", "0.63", "1.50", "1.25", "0.87", "1.01", "0.50"];   // CIR
+const cv = [  // CHARES VARIABLES
   "8750,00",
   "7000,00",
   "10062,50",
